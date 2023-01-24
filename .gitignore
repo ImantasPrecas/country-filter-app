@@ -11,6 +11,7 @@
 # production
 /build
 /mock
+src/api
 
 # misc
 .DS_Store

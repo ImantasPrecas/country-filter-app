@@ -1,11 +1,11 @@
-function Order({ option }) {
+function Order({ onChange }) {
   return (
     <div>
       <label htmlFor='sort' className='pr-2 text-white'>
         Sort by:
       </label>
       <select
-        onChange={option}
+        onChange={onChange}
         name='sort'
         id='sort'
         className='w-full py-2 px-4 border rounded-md shadow-md shadow-gray-600 cursor-pointer text-gray-400'

@@ -1,10 +1,11 @@
-function Region() {
+function Region({ onChange }) {
   return (
     <div>
       <label htmlFor='sort' className='pr-2 text-white'>
-        Filter by region:
+        In region:
       </label>
       <select
+        onChange={onChange}
         name='filter'
         id='filter'
         className='w-full py-2 px-4 border rounded-md shadow-md shadow-gray-600 cursor-pointer text-gray-400'
