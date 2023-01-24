@@ -1,6 +1,6 @@
 function Region() {
   return (
-    <div className>
+    <div>
       <label htmlFor='sort' className='pr-2 text-white'>
         Filter by region:
       </label>

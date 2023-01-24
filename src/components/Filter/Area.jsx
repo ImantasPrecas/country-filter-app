@@ -1,6 +1,6 @@
 function Area() {
   return (
-    <div className>
+    <div>
       <label className='pr-2 text-white' htmlFor='area'>
         Enter area:
       </label>

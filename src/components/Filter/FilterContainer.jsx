@@ -2,10 +2,10 @@ import Order from './Order';
 import Region from './Region';
 import Area from './Area';
 
-function FilterContainer() {
+function FilterContainer({ option }) {
   return (
     <div className='flex gap-4 md:justify-center py-2'>
-      <Order />
+      <Order option={option} />
       <Region />
       <Area />
     </div>
