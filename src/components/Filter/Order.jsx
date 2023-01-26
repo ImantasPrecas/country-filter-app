@@ -1,6 +1,6 @@
 function Order({ onChange }) {
   return (
-    <div>
+    <div className='w-full'>
       <label htmlFor='sort' className='pr-2 text-white'>
         Sort by:
       </label>

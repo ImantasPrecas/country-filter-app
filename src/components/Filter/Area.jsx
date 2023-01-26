@@ -1,6 +1,6 @@
 function Area({ onChange }) {
   return (
-    <div>
+    <div className='w-full'>
       <label className='pr-2 text-white' htmlFor='area'>
         Area less then:
       </label>

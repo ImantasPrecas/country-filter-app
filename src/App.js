@@ -1,20 +1,46 @@
 import Header from './components/Header';
 import FilterContainer from './components/Filter/FilterContainer';
 import CountriesList from './components/CountriesList';
-import { useEffect, useState } from 'react';
 
-const DUMMY_DATA = [
-  { name: 'Bosnia and Herzegovina', region: 'Europe', area: 51209.0, independent: false },
-  { name: 'Botswana', region: 'Africa', area: 582000.0, independent: false },
-  { name: 'Bouvet Island', region: 'Antarctic Ocean', area: 49.0, independent: false },
-  { name: 'Equatorial Guinea', region: 'Africa', area: 28051.0, independent: false },
-];
+import { useEffect, useState } from 'react';
+import { getCountries } from './api/api';
 
 function App() {
   const [ascending, setAcsending] = useState(true);
   const [region, setRegion] = useState('');
   const [area, setArea] = useState(null);
+
   const [filteredData, setFilteredData] = useState([]);
+  const [countries, setCountries] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let ignore = false;
+
+    const loadCountryList = async () => {
+      setIsLoading(true);
+
+      try {
+        const response = await getCountries();
+
+        if (!ignore) {
+          setCountries(response);
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        setError(error);
+      }
+    };
+
+    loadCountryList();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const orderChangeHandler = (e) => {
     setAcsending(e.target.value === 'ascending');
@@ -26,46 +52,54 @@ function App() {
 
   const areaChangeHandler = (e) => {
     setArea(e.target.value);
-    console.log(area);
   };
 
-  const filterByOrder = (DUMMY_DATA) => {
-    const strAscending = [...DUMMY_DATA].sort((a, b) => (a.name > b.name ? 1 : -1));
-    const strDescending = [...DUMMY_DATA].sort((a, b) => (a.name > b.name ? -1 : 1));
+  const filterByOrder = (countries) => {
+    const strAscending = [...countries].sort((a, b) => (a.name > b.name ? 1 : -1));
+    const strDescending = [...countries].sort((a, b) => (a.name > b.name ? -1 : 1));
     return ascending ? strAscending : strDescending;
   };
 
-  const filteredByRegion = (DUMMY_DATA) => {
+  const filteredByRegion = (countries) => {
     return region === 'default'
-      ? DUMMY_DATA
-      : DUMMY_DATA.filter((item) => item.region.toLowerCase().includes(region));
+      ? countries
+      : countries.filter((item) => item.region.includes(region));
   };
 
-  const filterByArea = (DUMMY_DATA) => {
-    return !area ? DUMMY_DATA : DUMMY_DATA.filter((item) => item.area < area);
+  const filterByArea = (countries) => {
+    return !area ? countries : countries.filter((item) => item.area < area);
   };
 
   useEffect(() => {
-    let data = DUMMY_DATA;
+    let data = countries;
+
     data = filteredByRegion(data);
     data = filterByOrder(data);
     data = filterByArea(data);
+
     setFilteredData(data);
-    console.log(filteredData);
+
+    return () => {
+      data = [];
+    };
 
     // eslint-disable-next-line
-  }, [region, ascending, area]);
+  }, [region, ascending, area, countries]);
 
   return (
-    <div className='bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900 h-screen px-6'>
+    <>
       <Header />
       <FilterContainer
         onOrderChange={orderChangeHandler}
         onRegionChange={regionChangeHandler}
         onAreaChange={areaChangeHandler}
       />
-      <CountriesList list={filteredData} />
-    </div>
+      {isLoading && !error && <p className='text-white text-xl'>Loading... </p>}
+      {error && (
+        <p className='text-white text-xl'>Something went wrong, {error.message}</p>
+      )}
+      {filteredData.length > 0 && <CountriesList list={filteredData} />}
+    </>
   );
 }
 
